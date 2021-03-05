@@ -30,10 +30,36 @@ train_tfms = tt.Compose([tt.Grayscale(num_output_channels=1),
 valid_tfms = tt.Compose([tt.Grayscale(num_output_channels=1),
                          tt.ToTensor()])
 
+!unzip /content/sample_data/archive2.zip
+
 dir = "/content"
 
 trainds = ImageFolder(dir + "/train",train_tfms)
 testds = ImageFolder(dir +"/test",valid_tfms)
 
 torch.Size([1, 48, 48])
+
+classes=('angry','disgusted','fearful','happy','neutral','sad','suprised')
+
+import numpy as np
+
+def imshow(img):
+  img=img / 2 + 0.5   #unnormalize
+  npimg=img.numpy()
+  plt.imshow(np.transpose(npimg,(1,2,0)))
+  plt.show()
+
+images,labels=next(iter(trainds))
+imshow(torchvision.utils.make_grid(images))
+print(' '.join('%5s' % classes[labels[j]] for j in range(4)))
+
+
+
+testloader=torch.utils.data.DataLoader(testds,batch_size=4,shuffle=False)
+
+trainloader=torch.utils.data.DataLoader(trainds,batch_size=4,shuffle=True)
+
+images,labels=next(iter(trainds))
+imshow(torchvision.utils.make_grid(images))
+print(' '.join('%5s' % classes[labels[j]] for j in range(4)))
 
